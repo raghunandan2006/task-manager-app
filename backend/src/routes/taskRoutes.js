@@ -17,7 +17,7 @@ import { checkTaskOwnership } from "../middlewares/ownership.js";
 
 const router = express.Router();
 router.post("/", requireAuth, validator(createTaskSchema), createTask);
-router.get("/", requireAuth, checkTaskOwnership, getAllTasks);
+router.get("/", requireAuth, getAllTasks);
 router.get("/:id", requireAuth, checkTaskOwnership, getTaskById);
 router.put(
   "/:id",

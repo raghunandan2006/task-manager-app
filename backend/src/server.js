@@ -1,18 +1,13 @@
-import dotenv from "dotenv";
-import cors from "cors";
+import dotenv from 'dotenv';
+import connectDB from '../config/db.js';
+import app from './app.js';
+
 dotenv.config();
 
-import connectDB from "../config/db.js";
-import app from "./app.js"; 
-
-const PORT = process.env.PORT || 5001;
 connectDB();
 
-app.use(cors({
-  origin: "http://localhost:5173", // your Vite frontend
-  credentials: true
-}));
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+ console.log(`Server running on http://localhost:${PORT}`);
 });

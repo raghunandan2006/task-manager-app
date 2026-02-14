@@ -10,14 +10,14 @@ export const checkTaskOwnership = async (req, res, next) => {
       throw err;
     }
 
-    if (req.user.role == "admin") return next();
+    if (req.user.role === "admin") return next();
 
-    if (task.userId.toString() != req.user.userId) {
+    if (task.userId.toString() !== req.user.userId) {
       const err = new Error("Forbidden: Not Allowed");
       err.status = 403;
       throw err;
     }
-    return next();
+    next();
   } catch (err) {
     next(err);
   }

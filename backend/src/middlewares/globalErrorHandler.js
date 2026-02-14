@@ -1,9 +1,10 @@
 const globalErrorHandler = (err, req, res, next) => {
-    const statusCode = err.status || 500;
-    res.status(statusCode).json({
+    console.error(err.message);
+    res.status(err.status || 500).json({
         success: false,
-        message: err.message || 'Internal Server Error',
+        message: err.message || "Oops! Something went wrong",
+        status: err.status || 500,
     });
-};
+}
 
 export default globalErrorHandler;
