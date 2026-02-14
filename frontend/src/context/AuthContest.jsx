@@ -1,21 +1,40 @@
-import axiosClient from "./axiosClient";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useMemo, useState } from "react";
+import { clearAuth, getAuth, setAuth } from "../utils/storage";
 
-export const fetchUsersApi = async (params) => {
-  const res = await axiosClient.get("/users", { params });
-  return res.data; // { success, message, data: users[], meta: {...} }
+const AuthContext = createContext(null);
+//provider -> component
+
+export const AuthProvider = ({ children }) => {
+  const existing = getAuth();
+
+  const [token, setToken] = useState(existing?.token || null);
+  const [user, setUser] = useState(existing?.user || null);
+
+  const isAuthenticated = Boolean(token);
+
+  const login = ({ token: t, user: u }) => {
+    setToken(t);
+    setUser(u);
+    setAuth({ token: t, user: u });
+  };
+
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    clearAuth();
+  };
+
+  const value = useMemo(
+    () => ({ token, user, isAuthenticated, login, logout }),
+    [token, user, isAuthenticated],
+  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const createUserApi = async (payload) => {
-  const res = await axiosClient.post("/users", payload);
-  return res.data; // { success, message, data: user }
+export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must have AuthProvider");
+  return ctx;
 };
-
-export const updateUserApi = async (id, payload) => {
-  const res = await axiosClient.put(`/users/${id}`, payload);
-  return res.data; // { success, message, data: user }
-};
-
-export const deleteUserApi = async (id) => {
-  const res = await axiosClient.delete(`/users/${id}`);
-  return res.data; // { success, message, data: {id} }
-};
+//token,user,isAuthentication,login,logout = useAuth();
